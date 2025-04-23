@@ -5,8 +5,8 @@ error_reporting(E_ALL);
 
 
 // Configura tus credenciales de Spotify
-define('SPOTIFY_CLIENT_ID', '363efb40421f40c1af9f4ef11c697168'); // Reemplaza con tu client_id
-define('SPOTIFY_CLIENT_SECRET', 'c4ff252eba7744e3822893133f272ccb'); // Reemplaza con tu client_secret
+define('SPOTIFY_CLIENT_ID', '691e01c12bc2463eb0bf3582b0b4d251'); // Reemplaza con tu client_id
+define('SPOTIFY_CLIENT_SECRET', 'c51cc8892aa7426a8d82ca21a75a113d'); // Reemplaza con tu client_secret
 
 function getSpotifyToken() {
     $url = 'https://accounts.spotify.com/api/token';
