@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chill Out Clock</title>
+    <style>
+        /* Set body full size and remove default margins */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        /* Background video to cover the entire screen */
+        video#background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+            filter: brightness(0.5); /* Darken the video slightly */
+        }
+
+        /* Transparent clock overlay */
+        .clock-container {
+            color: #ffffff;
+            z-index: 1;
+            text-align: center;
+            backdrop-filter: none;
+            padding: 0 10px;
+        }
+
+        #clock {
+            font-size: 12vw;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        }
+
+        #date {
+            font-size: 4vw;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        }
+
+        /* Music and Full Screen control button styling */
+        button, select {
+            background-color: rgba(255, 255, 255, 0.6);
+            color: black;
+            border: none;
+            padding: 5px 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 2vw;
+            z-index: 1;
+            backdrop-filter: blur(5px); /* Slight blur to make button stand out on video */
+        }
+
+        button:hover, select:hover {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Hidden iframe for playing music */
+        iframe#musicPlayer {
+            display: none;
+        }
+
+        /* Center both clock and buttons */
+        .center-container {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+
+        @media (max-width: 600px) {
+            #clock {
+                font-size: 10vw;
+            }
+
+            #date {
+                font-size: 5vw;
+            }
+
+            button, select {
+                font-size: 5vw;
+                padding: 8px 16px;
+            }
+        }
+
+        /* Signature styling */
+        .signature {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: #ffffff;
+            font-size: 1vw;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Text shadow for better visibility */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Video for looping wallpaper -->
+    <video autoplay muted loop id="background-video">
+        <source src="milkyway.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="center-container">
+        <div class="clock-container">
+            <div id="clock">00:00:00</div>
+            <div id="date">Monday, January 1, 2024</div>
+        </div>
+
+        <!-- Music control -->
+        <select id="musicSelect">
+            <option value="">Select Music</option>
+            <option value="https://www.youtube.com/embed/difXiUWu64U?autoplay=1">Neffex</option>
+            <option value="https://www.youtube.com/embed/fEvM-OUbaKs?autoplay=1">Coffee Jazz Live</option>
+            <option value="https://www.youtube.com/embed/4khIPP--FDU?autoplay=1">Relaxing Piano</option>
+            <option value="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1">Study Focus Music</option>
+            <option value="https://www.youtube.com/embed/JF06s21MIHk?autoplay=1">Waters of Heaven</option>
+        </select>
+        <button id="musicButton">Turn Music On</button>
+
+        <!-- Full screen control -->
+        <button id="fullscreenButton">Go Full Screen</button>
+    </div>
+
+    <!-- Music Player -->
+    <iframe id="musicPlayer" width="0" height="0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+    <!-- Signature -->
+    <div class="signature">Created by Erlkim</div>
+
+    <script>
+        // Clock Function
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const day = now.toLocaleDateString('en-US', { weekday: 'long' });
+            const date = now.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('date').textContent = `${day}, ${date}`;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock(); // Initialize the clock immediately
+
+        // Music Toggle Function
+        const musicButton = document.getElementById('musicButton');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const musicSelect = document.getElementById('musicSelect');
+        let isPlaying = false;
+
+        musicButton.addEventListener('click', () => {
+            const selectedMusic = musicSelect.value;
+            if (!selectedMusic) {
+                alert('Please select a music option!');
+                return;
+            }
+
+            if (isPlaying) {
+                musicPlayer.src = '';
+                musicButton.textContent = 'Turn Music On';
+            } else {
+                musicPlayer.src = selectedMusic;
+                musicButton.textContent = 'Turn Music Off';
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Full Screen Toggle Function
+        const fullscreenButton = document.getElementById('fullscreenButton');
+        let isFullscreen = false;
+
+        fullscreenButton.addEventListener('click', () => {
+            if (!isFullscreen) {
+                openFullscreen();
+                fullscreenButton.textContent = 'Exit Full Screen';
+            } else {
+                closeFullscreen();
+                fullscreenButton.textContent = 'Go Full Screen';
+            }
+            isFullscreen = !isFullscreen;
+        });
+
+        /* Fullscreen functions */
+        function openFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { /* Firefox */
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        function closeFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { /* Firefox */
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE/Edge */
+                document.msExitFullscreen();
+            }
+        }
+    </script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"934b9c560c29f918","version":"2025.4.0-1-g37f21b1","r":1,"token":"3a66a445e56b44d89152a4f97ad19f6d","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}}}' crossorigin="anonymous"></script>
+</body>
+</html>
