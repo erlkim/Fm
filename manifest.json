@@ -4,12 +4,12 @@
   "description": "Música sem Gospel sem parar!",
   "icons": [
     {
-      "src": "assets/jailson_cover.png",
+      "src": "assets/cover.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "assets/jailson_cover.png",
+      "src": "assets/cover.png",
       "type": "image/png",
       "sizes": "512x512"
     }
@@ -29,13 +29,13 @@
   ],
   "screenshots": [
     {
-      "src": "assets/jailson_cover.png",
+      "src": "assets/cover.png",
       "type": "image/png",
       "sizes": "540x720",
       "form_factor": "narrow"
     },
     {
-      "src": "assets/jailson_cover.png",
+      "src": "assets/cover.png",
       "type": "image/png",
       "sizes": "540x720",
       "form_factor": "narrow"
